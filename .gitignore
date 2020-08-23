@@ -67,3 +67,6 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+ArmRobot/Assets/ML-Agents/Timers/
+ArmRobot/Assets/ML-Agents/Timers.meta

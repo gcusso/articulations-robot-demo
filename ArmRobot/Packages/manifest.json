@@ -39,11 +39,5 @@
     "com.unity.modules.vr": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
     "com.unity.modules.xr": "1.0.0"
-  },
-  "lock": {
-    "com.unity.ml-agents.extensions": {
-      "revision": "HEAD",
-      "hash": "4e8f08c6260742a936d6881f9e3a48b31ea45993"
-    }
   }
 }
