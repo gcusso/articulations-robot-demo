@@ -1,27 +1,27 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TablePositionRandomizer : MonoBehaviour
+public class PositionRandomizer : MonoBehaviour
 {
     public GameObject table;
     public float robotMinReach = 0.2f;
     public float robotMaxReach = 0.5f;
 
-    Bounds tableBounds;
-    float targetY;
-
+    private Bounds tableBounds;
+    private float targetY;
+    private Rigidbody body;
+    private Collider ownCollider;
 
     void Start()
     {
         tableBounds = table.GetComponent<Collider>().bounds;
         targetY = transform.position.y;
+        body = GetComponent<Rigidbody>();
+        ownCollider = GetComponent<Collider>();
     }
 
-
-    // CONTROL
-
-    public void Move()
+    public void MoveToRandomPosition()
     {
         // random position (on table, within reach)     
         Vector2 tableTopPoint = RandomReachablePointOnTable();
@@ -32,40 +32,40 @@ public class TablePositionRandomizer : MonoBehaviour
 
         // random rotation
         Vector3 randomRotation = new Vector3(
-            transform.rotation.eulerAngles.x,
+            0,
             Random.value * 360.0f,
-            transform.rotation.eulerAngles.z);
+            0);
+
         transform.rotation = Quaternion.Euler(randomRotation);
 
         // reset velocity
-        Rigidbody rigidbody = GetComponent<Rigidbody>();
-        rigidbody.velocity = Vector3.zero;
-        rigidbody.angularVelocity = Vector3.zero;
+        body.velocity = Vector3.zero;
+        body.angularVelocity = Vector3.zero;
+
     }
 
-
-    // HELPERS
-
-    Vector2 RandomReachablePointOnTable()
+    private Vector2 RandomReachablePointOnTable()
     {
-        while (true)
+        // for (int i = 0; i < 100; i++)
         {
             Vector2 randomOffset = RandomPoint(robotMinReach, robotMaxReach);
-            bool onTable = PointOnTable(randomOffset);
-            if (onTable)
-            {
-                return randomOffset;
-            }
+            // bool onTable = PointOnTable(randomOffset);
+            // if (onTable)
+            // {
+            return randomOffset;
+            // }
         }
+
+        // throw new System.ArithmeticException("Random point not found");
     }
 
-    bool PointOnTable(Vector2 point)
+    private bool PointOnTable(Vector2 point)
     {
         /*  point: The 2D point on table top, relative to center of table top.
          *  Determines if this point would be on the table or not.      
          */
         Vector3 tableExtents = tableBounds.extents;
-        float targetRadius = GetComponent<Collider>().bounds.extents.x;
+        float targetRadius = ownCollider.bounds.extents.x;
         float safeXDistance = tableExtents.x - targetRadius;
         float safeZDistance = tableExtents.z - targetRadius;
         float xDistance = Mathf.Abs(point.x);
@@ -74,12 +74,12 @@ public class TablePositionRandomizer : MonoBehaviour
         return onTable;
     }
 
-    static Vector2 RandomPoint(float minRadius, float maxRadius)
+    private static Vector2 RandomPoint(float minRadius, float maxRadius)
     {
         /*  Picks a 2D point randomly at uniform. Must be between minRadius and
          *  maxRadius from center. Point given relative to center.      
          */
-        while (true)
+        for (int i = 0; i < 100; i++)
         {
             // pick a random point in a square
             float randomX = (Random.value * maxRadius * 2.0f) - maxRadius;
@@ -95,6 +95,8 @@ public class TablePositionRandomizer : MonoBehaviour
                 return randomPoint;
             }
         }
+
+        throw new System.ArithmeticException("Random point inside min and max radius not found");
     }
 
 }
